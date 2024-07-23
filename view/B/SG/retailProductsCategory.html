@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retail Products</title>
+    <!-- <link rel="stylesheet" href="/view/B/css/"> -->
+</head>
+<body>
+
+<!-- Include necessary scripts -->
+<script src="../checkCountry.js"></script>
+<script src="../../header.js"></script>
+<script src="menu2.js"></script>
+
+<style>
+    /* Toast Styles */
+    .toast {
+        position: fixed;
+        top: 50vh;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: #fff;
+        padding: 15px;
+        border-radius: 5px;
+        display: none;
+        z-index: 1;
+    }
+    
+    .toast.visible {
+        display: block;
+    }
+
+</style>
+
+<div class="body">
+    <div class="main">
+        <section class="page-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2>Retail Products</h2>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2 class="shorter"><strong id="categoryTitle"></strong></h2>
+                </div>
+            </div>
+            <div class="row">
+                <ul id="retailProductsDisplay" class="products product-thumb-info-list" style="list-style-type: none; margin-left: -3%;" data-plugin-masonry></ul>
+            </div>
+            <hr class="tall">
+        </div>
+    </div>
+</div>
+
+<script src="../footer.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var countryPrefix = localStorage.getItem('urlPrefix');
+        var currentUrl = new URL(window.location.href);
+        var cat = currentUrl.searchParams.get("cat");
+        var countryId = localStorage.getItem('countryId');
+
+        var authToken = null;
+        var countryPrefix = localStorage.getItem('urlPrefix');
+        
+
+        fetch('/api/getRetailProductByCat?cat=' + encodeURIComponent(cat) + '&countryId=' + countryId)
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(function (data) {
+                var htmlTxt = '';
+                data.forEach(function(product) {
+                    htmlTxt += `
+                        <li class="col-md-3 col-sm-6 col-xs-12 product" style="padding-bottom: 1%; padding-top: 2%;">
+                            <span class="product-thumb-info">
+                                <span class="product-thumb-info-image">
+                                    <img alt="" class="img-responsive" src="${product.imageURL}">
+                                </span>
+                                <span class="product-thumb-info-content">
+                                    <h4>${product.name}</h4>
+                                    <em>Price: $${product.price}.00</em><br/>
+                                    <form action="retailProductDetails.html">
+                                        <input type="hidden" name="sku" value="${product.sku}"/>
+                                        <input type="submit" class="btn btn-primary btn-block" value="More Details"/>
+                                    </form><br>`;
+                    //check if user is logged in
+                //     var memberEmail = sessionStorage.getItem('memberEmail');
+                //         //display 'Add To Cart' button only if user is logged in
+                //         if(memberEmail != null && memberEmail != '') {
+                //             htmlTxt += `<button class="btn btn-primary btn-block" onclick="addToFavourites('${product.sku}', '${product.name}', '${product.imageURL}', '${product.price}')">Add To Favourite</button>`;
+                //         }
+                        htmlTxt += '</span></span></li>';
+                });
+                document.getElementById("retailProductsDisplay").innerHTML = htmlTxt;
+                document.getElementById("categoryTitle").textContent = cat;
+            })
+            .catch(function(error) {
+                console.error('Error fetching data:', error);
+                // Display error message to the user if needed
+            });
+
+    });
+    function addToFavourites(sku, name, imageURL, price) {
+            var favorites = JSON.parse(sessionStorage.getItem('favorites')) || [];
+            var existingFavorite = favorites.find(function(favorite) {
+                return favorite.sku === sku;
+            });
+
+            if (existingFavorite) {
+                showToast('Item is already in favorites!');
+            } else {
+                favorites.push({
+                    sku: sku,
+                    name: name,
+                    imageURL: imageURL,
+                    price: price
+                });
+                sessionStorage.setItem('favorites', JSON.stringify(favorites));
+                showToast('Item added to favorites!');
+            }
+        }
+
+        function showToast(message) {
+            var toast = document.createElement('div');
+            toast.className = 'toast visible';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(function() {
+                toast.classList.remove('visible');
+                setTimeout(function() {
+                    document.body.removeChild(toast);
+                }, 300); // Remove toast element after animation
+            }, 1500); // 1500 milliseconds = 3 seconds
+        }
+</script>
+
+</body>
+</html>
