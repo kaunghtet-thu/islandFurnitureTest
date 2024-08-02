@@ -30,6 +30,33 @@
             document.addEventListener('DOMContentLoaded', function(){
                 member = JSON.parse(sessionStorage.getItem("member"));
 
+                document.getElementById("name").value = member.name;
+                document.getElementById("email").value = member.email;
+                document.getElementById("phone").value = member.phone;
+                document.getElementById("address").value = member.address;
+
+                let option1 = "<option value='1'>What is your mother's maiden name?</option>";
+                let option2 = "<option value='2'>What is your first pet's name?</option>";
+                let option3 = "<option value='3'>What is your favourite animal?</option>";
+
+                
+                if(member.securityQuestion == 1){
+                    document.getElementById("securityQuestion").innerHTML = option1 + option2 + option3;
+                }else if(member.securityQuestion == 2){
+                    document.getElementById("securityQuestion").innerHTML = option2 + option1 + option3;
+                }else if(member.securityQuestion == 3){
+                    document.getElementById("securityQuestion").innerHTML = option3 + option1 + option2;
+                }else{
+                    document.getElementById("securityQuestion").innerHTML = option1 + option2 + option3;
+                };
+
+                document.getElementById("securityAnswer").value = member.securityAnswer;
+                document.getElementById("country").value = member.city;
+                document.getElementById("age").value = member.age;
+                document.getElementById("income").value = member.income;
+
+
+
                 if(member.sla == 1) {
                     document.getElementById("serviceLevelAgreement").checked = true;
                 }
