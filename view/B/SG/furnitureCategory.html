@@ -47,52 +47,99 @@
                 }).then(function (data) {
                     var htmlTxt = '';
                     
-                        var furniture = data[0];
-                        //generate html for furnitures
-                        htmlTxt += '\
-                            <li class="col-md-3 col-sm-6 col-xs-12 product" style="padding-bottom: 1%;padding-top: 2%;">\
-                                <span class="product-thumb-info">\
-                                    <span class="product-thumb-info-image">\
-                                        <span class="product-thumb-info-act">\
-                                            <span class="product-thumb-info-act-left">\
-                                                <a href="furnitureProductDetails.html?sku=' + furniture.sku + '" style="color: white"><em>View Details</em></a>\
-                                            </span>\
-                                        </span>\
-                                        <img alt=""  class="img-responsive" src="' + furniture.imageURL + '">\
-                                    </span>\
-                                    <span class="product-thumb-info-content">\
-                                            <div style="display: flex; align-items: center; justify-content: space-between;">\
-                                        <h4>' + furniture.name + '</h4>';
-                                        //check if user is logged in
-                        var memberEmail = sessionStorage.getItem('memberEmail');
-                        //display 'Add To Cart' button only if user is logged in
-                        if(memberEmail != null && memberEmail != '') {
-                            htmlTxt += '<span class="product-thumb-info-act-right align-right"><i id="heart" class="icon icon-heart" onclick="addToFavourites(\'' + furniture.sku +
-                                '\',\'' + furniture.id + '\',' + furniture.price + ',\'' + furniture.name + '\',\'' + furniture.imageURL +
-                                '\')"></i></span></div><br>';
-                        }
-                        htmlTxt +='</div><br><span class="product-thumb-info-act-left">\
-                                            <em>Height: ' + furniture.height + '</em>\
-                                        </span><br/>\
-                                        <span class="product-thumb-info-act-left">\
-                                            <em>Length: ' + furniture.length + '</em>\
-                                        </span><br/>\
-                                        <span class="product-thumb-info-act-left">\
-                                            <em>Width: ' + furniture.width + '</em>\
-                                        </span><br/>\
-                                        <span class="product-thumb-info-act-left">\
-                                            <em>Price: $' + furniture.price + '.00</em>\
-                                        </span><br/><br>\
-                                        <form action="furnitureProductDetails.html">\
-                                            <input type="hidden" name="sku" value="' + furniture.sku + '"/>\
-                                            <input type="submit" class="btn btn-primary btn-block" value="More Details"/>\
-                                        </form>';
-                        if(memberEmail != null && memberEmail != '') {
-                            htmlTxt += '<button class="btn btn-primary btn-block" onclick="addToCart(\'' + furniture.sku +
-                                '\',\'' + furniture.id + '\',' + furniture.price + ',\'' + furniture.name + '\',\'' + furniture.imageURL +
-                                '\')">Add To Cart</button>';
-                        }
-                        htmlTxt += '</span></span></li>';
+                        // var furniture = data[0];
+                        // //generate html for furnitures
+                        // htmlTxt += '\
+                        //     <li class="col-md-3 col-sm-6 col-xs-12 product" style="padding-bottom: 1%;padding-top: 2%;">\
+                        //         <span class="product-thumb-info">\
+                        //             <span class="product-thumb-info-image">\
+                        //                 <span class="product-thumb-info-act">\
+                        //                     <span class="product-thumb-info-act-left">\
+                        //                         <a href="furnitureProductDetails.html?sku=' + furniture.sku + '" style="color: white"><em>View Details</em></a>\
+                        //                     </span>\
+                        //                 </span>\
+                        //                 <img alt=""  class="img-responsive" src="' + furniture.imageURL + '">\
+                        //             </span>\
+                        //             <span class="product-thumb-info-content">\
+                        //                     <div style="display: flex; align-items: center; justify-content: space-between;">\
+                        //                 <h4>' + furniture.name + '</h4>';
+                        //                 //check if user is logged in
+                        // var memberEmail = sessionStorage.getItem('memberEmail');
+                        // //display 'Add To Cart' button only if user is logged in
+                        // if(memberEmail != null && memberEmail != '') {
+                        //     htmlTxt += '<span class="product-thumb-info-act-right align-right"><i id="heart" class="icon icon-heart" onclick="addToFavourites(\'' + furniture.sku +
+                        //         '\',\'' + furniture.id + '\',' + furniture.price + ',\'' + furniture.name + '\',\'' + furniture.imageURL +
+                        //         '\')"></i></span></div><br>';
+                        // }
+                        // htmlTxt +='</div><br><span class="product-thumb-info-act-left">\
+                        //                     <em>Height: ' + furniture.height + '</em>\
+                        //                 </span><br/>\
+                        //                 <span class="product-thumb-info-act-left">\
+                        //                     <em>Length: ' + furniture.length + '</em>\
+                        //                 </span><br/>\
+                        //                 <span class="product-thumb-info-act-left">\
+                        //                     <em>Width: ' + furniture.width + '</em>\
+                        //                 </span><br/>\
+                        //                 <span class="product-thumb-info-act-left">\
+                        //                     <em>Price: $' + furniture.price + '.00</em>\
+                        //                 </span><br/><br>\
+                        //                 <form action="furnitureProductDetails.html">\
+                        //                     <input type="hidden" name="sku" value="' + furniture.sku + '"/>\
+                        //                     <input type="submit" class="btn btn-primary btn-block" value="More Details"/>\
+                        //                 </form>';
+                        // if(memberEmail != null && memberEmail != '') {
+                        //     htmlTxt += '<button class="btn btn-primary btn-block" onclick="addToCart(\'' + furniture.sku +
+                        //         '\',\'' + furniture.id + '\',' + furniture.price + ',\'' + furniture.name + '\',\'' + furniture.imageURL +
+                        //         '\')">Add To Cart</button>';
+                        // }
+                        // htmlTxt += '</span></span></li>';
+                        data.forEach(function(furniture) {
+            // Generate HTML for each furniture item
+            htmlTxt += '\
+                <li class="col-md-3 col-sm-6 col-xs-12 product" style="padding-bottom: 1%;padding-top: 2%;">\
+                    <span class="product-thumb-info">\
+                        <span class="product-thumb-info-image">\
+                            <span class="product-thumb-info-act">\
+                                <span class="product-thumb-info-act-left">\
+                                    <a href="furnitureProductDetails.html?sku=' + furniture.sku + '" style="color: white"><em>View Details</em></a>\
+                                </span>\
+                            </span>\
+                            <img alt="" class="img-responsive" src="' + furniture.imageURL + '">\
+                        </span>\
+                        <span class="product-thumb-info-content">\
+                            <div style="display: flex; align-items: center; justify-content: space-between;">\
+                                <h4>' + furniture.name + '</h4>';
+            // Check if user is logged in
+            var memberEmail = sessionStorage.getItem('memberEmail');
+            // Display 'Add To Cart' button only if user is logged in
+            if (memberEmail != null && memberEmail != '') {
+                htmlTxt += '<span class="product-thumb-info-act-right align-right"><i id="heart-' + furniture.sku + '" class="icon icon-heart" onclick="addToFavourites(\'' + furniture.sku +
+                    '\',\'' + furniture.id + '\',' + furniture.price + ',\'' + furniture.name + '\',\'' + furniture.imageURL +
+                    '\')"></i></span></div><br>';
+            }
+            htmlTxt += '</div><br><span class="product-thumb-info-act-left">\
+                            <em>Height: ' + furniture.height + '</em>\
+                        </span><br/>\
+                        <span class="product-thumb-info-act-left">\
+                            <em>Length: ' + furniture.length + '</em>\
+                        </span><br/>\
+                        <span class="product-thumb-info-act-left">\
+                            <em>Width: ' + furniture.width + '</em>\
+                        </span><br/>\
+                        <span class="product-thumb-info-act-left">\
+                            <em>Price: $' + furniture.price + '.00</em>\
+                        </span><br/><br>\
+                        <form action="furnitureProductDetails.html">\
+                            <input type="hidden" name="sku" value="' + furniture.sku + '"/>\
+                            <input type="submit" class="btn btn-primary btn-block" value="More Details"/>\
+                        </form>';
+            if (memberEmail != null && memberEmail != '') {
+                htmlTxt += '<button class="btn btn-primary btn-block" onclick="addToCart(\'' + furniture.sku +
+                    '\',\'' + furniture.id + '\',' + furniture.price + ',\'' + furniture.name + '\',\'' + furniture.imageURL +
+                    '\')">Add To Cart</button>';
+            }
+            htmlTxt += '</span></span></li>';
+        });
                         
                     document.getElementById("furnituresDisplay").innerHTML = htmlTxt;
                     document.getElementById("categoryTitle").innerHTML = cat;
