@@ -364,7 +364,7 @@
                         var memberData = {
                             id: member.id,
                             password: oldPassword
-                        };
+                        }
 
                         await fetch(new Request('/api/verifyPassword',
                         {
@@ -399,6 +399,14 @@
                         }).catch(function (error) {
                             console.log(error);
                         }); 
+                    } else {
+                        if (oldPassword != "" && (password == "" || repassword == "")) {
+                            alert("Please fill in all password fields.");
+                            ok = false;
+                        } else if (oldPassword == "" && (password != "" || repassword != "")) {
+                            alert("Please enter the old password.");
+                            ok = false;
+                        }
                     }
 
                     if(ok) {
