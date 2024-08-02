@@ -3,6 +3,33 @@ var app = express();
 let middleware = require('./middleware');
 
 var country = require('../model/countryModel.js');
+
+app.get('/api/getCountryByID/:id', function (req, res) {
+    var id = req.params.id;
+    country.getCountryByID(id)
+        .then((result) => {
+            res.send(result);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send("Failed to get country by ID");
+        });
+});
+
+
+
+app.get('/api/getCountryByName/:name', function (req, res) {
+    var name = req.params.name;
+    country.getCountryByName(name)
+        .then((result) => {
+            res.send(result);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send("Failed to get country by name");
+        });
+});
+
 app.get('/api/getCountryByName/:name', function (req, res) {
     var name = req.params.name;
     country.getCountryByName(name)

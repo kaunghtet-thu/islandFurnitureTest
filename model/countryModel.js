@@ -2,38 +2,8 @@ var db = require('./databaseConfig.js');
 var Country = require('./country.js');
 var CountryItemPrice = require('./countryItemPrice.js');
 var countryDB = {
-    getCountryByName: function (name) {
-        return new Promise( ( resolve, reject ) => {
-            var conn = db.getConnection();
-            conn.connect(function (err) {
-                if (err) {
-                    console.log(err);
-                    conn.end();
-                    return reject(err);
-                }
-                else {
-                    var sql = 'SELECT * FROM countryentity c WHERE c.NAME=?';
-                    conn.query(sql, [name], function (err, result) {
-                        if (err) {
-                            conn.end();
-                            return reject(err);
-                        } else {
-                            var country = new Country();
-                            country.id = result[0].ID;
-                            country.countryCode = result[0].COUNTRYCODE;
-                            country.currency = result[0].CURRENCY;
-                            country.exchangeRate = result[0].EXCHANGERATE;
-                            country.name = result[0].NAME;
-                            conn.end();
-                            return resolve(country);
-                        }
-                    });
-                }
-            });
-        });
-    },
     getAllCountries: function () {
-        return new Promise( ( resolve, reject ) => {
+        return new Promise((resolve, reject) => {
             var conn = db.getConnection();
             conn.connect(function (err) {
                 if (err) {
@@ -49,7 +19,7 @@ var countryDB = {
                             return reject(err);
                         } else {
                             var countryList = [];
-                            for(var i = 0; i < result.length; i++) {
+                            for (var i = 0; i < result.length; i++) {
                                 var country = new Country();
                                 country.id = result[i].ID;
                                 country.name = result[i].NAME;
@@ -64,7 +34,7 @@ var countryDB = {
         });
     },
     getAllItems: function () {
-        return new Promise( ( resolve, reject ) => {
+        return new Promise((resolve, reject) => {
             var conn = db.getConnection();
             conn.connect(function (err) {
                 if (err) {
@@ -81,7 +51,7 @@ var countryDB = {
                             return reject(err);
                         } else {
                             var itemPriceList = [];
-                            for(var i = 0; i < result.length; i++) {
+                            for (var i = 0; i < result.length; i++) {
                                 var countryItemPrice = new CountryItemPrice();
                                 countryItemPrice.itemId = result[i].ITEM_ID;
                                 countryItemPrice.sku = result[i].SKU;
@@ -99,7 +69,7 @@ var countryDB = {
         });
     },
     getItemIdBySku: function (sku) {
-        return new Promise( ( resolve, reject ) => {
+        return new Promise((resolve, reject) => {
             var conn = db.getConnection();
             conn.connect(function (err) {
                 if (err) {
@@ -122,8 +92,8 @@ var countryDB = {
             });
         });
     },
-    checkPriceExist: function (itemId,countryId) {
-        return new Promise( ( resolve, reject ) => {
+    checkPriceExist: function (itemId, countryId) {
+        return new Promise((resolve, reject) => {
             var conn = db.getConnection();
             conn.connect(function (err) {
                 if (err) {
@@ -133,13 +103,13 @@ var countryDB = {
                 }
                 else {
                     var sql = 'SELECT * FROM item_countryentity WHERE ITEM_ID=? and COUNTRY_ID=?';
-                    conn.query(sql, [itemId,countryId], function (err, result) {
+                    conn.query(sql, [itemId, countryId], function (err, result) {
                         if (err) {
                             conn.end();
                             return reject(err);
                         } else {
                             conn.end();
-                            if(result.length == 0) {
+                            if (result.length == 0) {
                                 return resolve(true);
                             }
                             else {
@@ -151,8 +121,8 @@ var countryDB = {
             });
         });
     },
-    addItemPrice: function (countryId,itemId,price) {
-        return new Promise( ( resolve, reject ) => {
+    addItemPrice: function (countryId, itemId, price) {
+        return new Promise((resolve, reject) => {
             var conn = db.getConnection();
             conn.connect(function (err) {
                 if (err) {
@@ -162,12 +132,12 @@ var countryDB = {
                 }
                 else {
                     var sql = 'INSERT INTO item_countryentity(RETAILPRICE,ITEM_ID,COUNTRY_ID) values(?,?,?)';
-                    conn.query(sql, [price,itemId,countryId], function (err, result) {
+                    conn.query(sql, [price, itemId, countryId], function (err, result) {
                         if (err) {
                             conn.end();
                             return reject(err);
                         } else {
-                            if(result.affectedRows > 0) {
+                            if (result.affectedRows > 0) {
                                 conn.end();
                                 return resolve(true);
                             }
@@ -178,7 +148,7 @@ var countryDB = {
         });
     },
     removeItemPricing: function (ids) {
-        return new Promise( ( resolve, reject ) => {
+        return new Promise((resolve, reject) => {
             var conn = db.getConnection();
             conn.connect(function (err) {
                 if (err) {
@@ -188,7 +158,7 @@ var countryDB = {
                 }
                 else {
                     var idString = '';
-                    for(i = 0; i < ids.length; i++) {
+                    for (i = 0; i < ids.length; i++) {
                         idString += ids[i] + ',';
                     }
                     idString = idString.substr(0, idString.length - 1);
@@ -197,9 +167,9 @@ var countryDB = {
                         if (err) {
                             conn.end();
                             return reject(err);
-                        } 
+                        }
                         else {
-                            if(result.affectedRows > 0) {
+                            if (result.affectedRows > 0) {
                                 conn.end();
                                 return resolve(true);
                             }
@@ -210,7 +180,7 @@ var countryDB = {
         });
     },
     updateItemPrice: function (details) {
-        return new Promise( ( resolve, reject ) => {
+        return new Promise((resolve, reject) => {
             var conn = db.getConnection();
             conn.connect(function (err) {
                 if (err) {
@@ -223,13 +193,13 @@ var countryDB = {
                     var countryId = details.countryId;
                     var price = details.price;
                     var sql = 'UPDATE item_countryentity SET RETAILPRICE=? WHERE ITEM_ID=? and COUNTRY_ID=?';
-                    var sqlArgs = [price,itemId,countryId];
+                    var sqlArgs = [price, itemId, countryId];
                     conn.query(sql, sqlArgs, function (err, result) {
                         if (err) {
                             conn.end();
                             return reject(err);
                         } else {
-                            if(result.affectedRows > 0) {
+                            if (result.affectedRows > 0) {
                                 conn.end();
                                 return resolve(true);
                             }
