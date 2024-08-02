@@ -195,6 +195,10 @@
                 var password = document.getElementById("password").value;
                 var repassword = document.getElementById("repassword").value;
                 var ok = true;
+                if (oldPassword != "" && (password == "" || repassword == "")) {
+                        alert("Cannot set password to blank")
+                        ok = false;
+                }
                 console.log(oldPassword)
                 if (document.getElementById("profileForm").checkValidity()) {
                     if (oldPassword != "" && password != "" && repassword != "") {
@@ -240,7 +244,7 @@
 
                     if(ok) {
                         var data = {
-                            email: document.getElementById("email").value,
+                            email: sessionStorage.getItem("memberEmail"),
                             name: document.getElementById("name").value,
                             phone: document.getElementById("phone").value,
                             country: document.getElementById("country").value,
@@ -252,7 +256,7 @@
                             sla: document.getElementById("serviceLevelAgreement").checked ? 1:0,
                             password: document.getElementById("password").value
                         };
-                        
+
                         fetch(new Request('/api/updateMember',
                         {
                             method: 'PUT',
@@ -262,13 +266,16 @@
                             },
                             body: JSON.stringify(data)
                         })).then(function (response) {
+                            console.log("Response: " + response)
                             return response.json();
                         }).then(function (data) {
+                            console.log("Data: " + data)
                             //update member's info in the session storage
                             sessionStorage.setItem("member", JSON.stringify(data));
                             sessionStorage.setItem("memberEmail", data.email);
                             sessionStorage.setItem("memberName", data.name);
                             var url = window.location.origin + window.location.pathname;
+                            console.log("Success")
                             window.location.href = url + '?goodMsg=Successfully Updated!';
                         }).catch(function (error) {
                             console.log(error);
