@@ -2,6 +2,36 @@ var db = require('./databaseConfig.js');
 var Country = require('./country.js');
 var CountryItemPrice = require('./countryItemPrice.js');
 var countryDB = {
+    getCountryByName: function (name) {
+        return new Promise( ( resolve, reject ) => {
+            var conn = db.getConnection();
+            conn.connect(function (err) {
+                if (err) {
+                    console.log(err);
+                    conn.end();
+                    return reject(err);
+                }
+                else {
+                    var sql = 'SELECT * FROM countryentity c WHERE c.NAME=?';
+                    conn.query(sql, [name], function (err, result) {
+                        if (err) {
+                            conn.end();
+                            return reject(err);
+                        } else {
+                            var country = new Country();
+                            country.id = result[0].ID;
+                            country.countryCode = result[0].COUNTRYCODE;
+                            country.currency = result[0].CURRENCY;
+                            country.exchangeRate = result[0].EXCHANGERATE;
+                            country.name = result[0].NAME;
+                            conn.end();
+                            return resolve(country);
+                        }
+                    });
+                }
+            });
+        });
+    },
     getAllCountries: function () {
         return new Promise((resolve, reject) => {
             var conn = db.getConnection();
